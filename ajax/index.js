@@ -1,12 +1,12 @@
 // 原生ajax方法封装
+
 ajax({
-    type: 'get',
+    type: 'post',
     url: 'http://127.0.0.1:3000/test',
     data: {
         id: 1
     },
-    dataType: 'json',
-    header: {}
+    dataType: 'json'
 }).then((data) => {
     console.log(data)
 }, (err) => {
@@ -21,7 +21,9 @@ ajax({
 4 完成。接收到所有响应数据 */
 function ajax(obj) {
     return new Promise((resolve, reject) => {
-        let {type='GET', dataType='json', async=true, url, data, header={}} = obj
+        let {type='GET', dataType='json', async=true, url, data, header={
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }} = obj
         // 全部转换为大写，可以不区分大小写
         type = type.toUpperCase()
         let XHR = createXHR()
@@ -38,18 +40,27 @@ function ajax(obj) {
             }
         }
         // 设置请求头
-        for (let x in header) {
-            XHR.setRequestHeader(x, header[x])
-        }
+
         if (type === 'GET') {
             // 拼接过后的url
             let urls = urlMosaic(url, data)
             XHR.open('get', urls, async)
-            XHR.send(null)
+            for (let x in header) {
+                XHR.setRequestHeader(x, header[x])
+            }
+            XHR.send()
         }
         if (type === 'POST') {
             XHR.open('post', url, async)
-            XHR.send(data)
+            for (let x in header) {
+                XHR.setRequestHeader(x, header[x])
+            }
+            let str = ''
+            for (let x in data) {
+                str += `&${x}=${data[x]}`
+            }
+            str = str ? str.slice(1) : str
+            XHR.send(str)
         }
     })
 }
