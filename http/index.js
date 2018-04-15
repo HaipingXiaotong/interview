@@ -12,21 +12,21 @@ const url = require('url')
 302 临时重定向
 304 资源已找到 返回304 Not Modifid */
 let time = 0
-/* app.get('/no-cache', function (req, res) {
+app.get('/no-cache', function (req, res) {
     var change = req.query.id
     if (change === '1') {
         time++
     }
-    res.set({'Content-Type': 'text/plain', 'Cache-Control': 'no-cache'})
+    res.set({'Content-Type': 'text/plain', 'Cache-Control': 'max-stale=30'})
     res.send('cache:' + time);
 });
 
 var server = app.listen(3000, function () {
     console.log('Example app listening at http://127.0.0.1:3000',);
-}); */
-http.createServer((req, res, next) => {
-    /* 设置响应头和
-    Content-Type http首部字段 */
+});
+/* http.createServer((req, res, next) => {
+    设置响应头和
+    Content-Type http首部字段
     let urls = url.parse(req.url, true)
     console.log(urls.query)
     if (urls.query.id && urls.query.id === '1') {
@@ -52,4 +52,4 @@ http.createServer((req, res, next) => {
     }
 }).listen(3000, '127.0.0.1', () => {
     console.log('Server listen 127.0.0.1:3000')
-})
+}) */
